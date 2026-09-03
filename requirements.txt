@@ -1,0 +1,11 @@
+jupyter>=1.1,<2
+librosa>=0.10.2,<1
+matplotlib>=3.8,<4
+numpy>=1.26,<3
+pandas>=2.2,<3
+scikit-learn>=1.5,<2
+soundfile>=0.12,<1
+torch>=2.4,<3
+torchaudio>=2.4,<3
+tqdm>=4.66,<5
+
