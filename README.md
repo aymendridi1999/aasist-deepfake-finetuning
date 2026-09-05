@@ -94,3 +94,22 @@ python scripts/validate_notebook.py
 
 The checker validates notebook structure, rejects committed outputs and execution counts, parses ordinary Python cells, and checks the migration safeguards.
 
+
+## Audit and training status
+
+The current notebook contains no committed training outputs, fabricated metric arrays, or fixed accuracy claims. Metrics and confusion matrices are computed from model predictions and labels at runtime. Regression-test expectations use small fixtures to verify the calculations; they are not model performance results. Seeds, model dimensions, thresholds, sample limits, and dataset row-count checks are configuration or validation constants, not claimed scores.
+
+No completed training run or fine-tuned checkpoint is verified by this repository. Dataset names below describe the configured training inputs. Running the notebook writes split manifests and prediction files so a future result can be traced to the rows evaluated. Do not publish benchmark scores until a real dataset run has been completed and reviewed.
+
+See [AUDIT.md](AUDIT.md) for findings, fixes, validation, and remaining limitations.
+
+## Configured training datasets
+
+| Stage | Dataset | Evidence / split |
+| --- | --- | --- |
+| Upstream pretrained AASIST | ASVspoof 2019 Logical Access | Official clovaai/aasist checkpoint and upstream documentation; pinned source revision |
+| Configured local fine-tuning | ASVspoof 2021 Deepfake evaluation audio with released CM labels | Matched local files; stratified 80/10/10 train/validation/test |
+
+The repository does not establish that local fine-tuning has completed. These local splits do not implement an official ASVspoof 2021 challenge experiment.
+
+Regression checks: `python -m unittest discover -s tests -v` (install requirements first).

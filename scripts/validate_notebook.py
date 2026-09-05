@@ -5,6 +5,9 @@ from __future__ import annotations
 
 import ast
 import json
+import re
+from IPython.core.inputtransformer2 import TransformerManager
+import nbformat
 from pathlib import Path
 
 
@@ -27,6 +30,7 @@ def main() -> None:
     if not isinstance(cells, list) or not cells:
         raise ValueError("Notebook must contain cells.")
 
+    nbformat.validate(nbformat.from_dict(notebook))
     failures: list[str] = []
     full_source: list[str] = []
 
@@ -41,11 +45,9 @@ def main() -> None:
         if cell.get("execution_count") is not None:
             failures.append(f"cell {index}: execution_count must be null")
 
-        if any(
-            line.lstrip().startswith(("%", "!"))
-            for line in source.splitlines()
-        ):
-            continue
+        if re.search(r"[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u200D]", source):
+            failures.append(f"cell {index}: emoji characters are not allowed")
+        source = TransformerManager().transform_cell(source)
 
         try:
             ast.parse(source, filename=f"{NOTEBOOK_PATH.name}:cell-{index}")
